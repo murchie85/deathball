@@ -3,10 +3,10 @@ class playerSprite():
         self.imageFrames = imageFrames
         
 
-        self.upF         = self.imageFrames[:3]
-        self.downF       = self.imageFrames[3:6]
-        self.rightF      = self.imageFrames[6:9]
-        self.leftF       = self.imageFrames[9:12]
+        self.downF       = self.imageFrames[:6]
+        self.upF         = self.imageFrames[6:12]
+        self.rightF      = self.imageFrames[12:18]
+        self.leftF       = self.imageFrames[18:]
 
         self.liveFrames  = self.downF
         self.numFrames   = len(self.downF)
@@ -114,6 +114,8 @@ class playerObject():
 
     def dribble(self,colliding,fitba,inRange,gui,bounce=1):
         if(colliding):
+            fitba.x,fitba.y = self.x,self.y
+            """
             if(self.u): 
                 fitba.y -= bounce*self.vy
             if(self.d): 
@@ -124,6 +126,7 @@ class playerObject():
             if(self.r): 
                 fitba.x += bounce*self.vx
                 fitba.y  = self.y + (0.6*self.sprite.h) # position ball
+            """
 
 
         if(gui.userInput.kick and inRange):

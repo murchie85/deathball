@@ -74,18 +74,17 @@ class camera():
 
 camera = camera(gui.width/2,gui.height/2)
 
-footballSpriteList     = importFiles('foo',3,tDir='sprites/football/')
+footballSpriteList     = impFilesL('ball1.png',tDir = 'sprites/ball/')
 footballSprite         = sprite(footballSpriteList,gui.width/2,gui.height/2)
 fitba                  = fitbaObject(footballSprite)
 
-playerSSW            = importFiles('ssW',3,tDir='sprites/players/ssw/')
-tDir='sprites/players/ssw/'
-playerSSW            = [pygame.image.load(tDir+'ssW1.png'),pygame.image.load(tDir+'ssW2.png'),pygame.image.load(tDir+'ssW3.png'),pygame.image.load(tDir+'ssW4.png'),pygame.image.load(tDir+'ssW5.png'),pygame.image.load(tDir+'ssW6.png'),pygame.image.load(tDir+'ssW7.png'),pygame.image.load(tDir+'ssW8.png'),pygame.image.load(tDir+'ssW9.png'),pygame.image.load(tDir+'ssW10.png'),pygame.image.load(tDir+'ssW11.png'),pygame.image.load(tDir+'ssW12.png')]
+playerSSW            = impFilesL('proto1.png',tDir='sprites/players/mech/')
 playerSprite         = playerSprite(playerSSW)
-player               = playerObject(playerSprite,gui.width/2,gui.height/3,2.5,1.8)
+player               = playerObject(playerSprite,gui.width/2,gui.height/3,vx=5,vy=5)
 
 
-field               = pygame.image.load('sprites/fieldBig.png') 
+snowField           = pygame.image.load('sprites/snowFieldBig.png')
+field               = pygame.image.load('sprites/fieldBig.png')
 
 
 
@@ -99,7 +98,7 @@ while gui.running:
     gui.itercount+=1
 
     screen.fill((10, 100, 10))
-    drawImage(screen,field,(0-camera.x,0 -camera.y))
+    drawImage(screen,snowField,(0-camera.x,0 -camera.y))
     
     gui.clicked = False
     # Reset the key each round
@@ -124,6 +123,10 @@ while gui.running:
     if(camera.target=='player'):
         camera.x = player.x + camera.offx
         camera.y = player.y + camera.offy
+
+    if(camera.target=='ball'):
+        camera.x = fitba.x + camera.offx
+        camera.y = fitba.y + camera.offy
 
 
         
