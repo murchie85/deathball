@@ -13,29 +13,12 @@ from _gameState             import *
 from _input                 import *
 from _utils                 import *
 from _player                import *
+from _ball                  import *
 
 
-#----------------------------------------
-"""
-Reusable classes
-GUI- it contains width,height,font and userinput
-
-
-
-
-
-
-
-
-"""
-#----------------------------------------
 
 # -----------VARIABLES & FLAGS
-
-white          = (255,255,255)
-green          = (0,255,0)
-blue           = (176,224,230)
-FPS            = 90
+FPS            = 60
 width, height  = 1280,720
 themeColour    = (128,0,0)
 time = 0
@@ -48,31 +31,15 @@ pygame.display.set_caption("Fitba")
 clock          = pygame.time.Clock()
 nextFrame      = pygame.time.get_ticks()
 screen         = pygame.display.set_mode((width,height),pygame.DOUBLEBUF)
-#phoneScreen    = pygame.display.set_mode((405,544),pygame.DOUBLEBUF)
-pygame.time.set_timer(pygame.USEREVENT, 20)
-
-font        = pygame.font.Font('fonts/nokiafc22.ttf', 32)
-
-
+#pygame.time.set_timer(pygame.USEREVENT, 20)
 
 # ---------------CLASS OBJECTS
-gui                   = gui(screen,width,height,font)
+gui                   = gui(screen,width,height)
 user_input            = userInputObject("","",(0.27,0.65,0.45,0.08), gui)
 modifyInput           = manageInput()
-
+camera                = camera(gui.width/2,gui.height/2,gui)
 
 # -----------game objects
-
-
-class camera():
-    def __init__(self, x, y):
-        self.x      = x
-        self.y      = y
-        self.offx   = -gui.width/2
-        self.offy   = -gui.height/2
-        self.target = 'player'
-
-camera = camera(gui.width/2,gui.height/2)
 
 footballSpriteList     = impFilesL('ball1.png',tDir = 'sprites/ball/')
 footballSprite         = sprite(footballSpriteList,gui.width/2,gui.height/2)
@@ -81,7 +48,6 @@ fitba                  = fitbaObject(footballSprite)
 playerSSW            = impFilesL('proto1.png',tDir='sprites/players/mech/')
 playerSprite         = playerSprite(playerSSW)
 player               = playerObject(playerSprite,gui.width/2,gui.height/3,vx=5,vy=5)
-
 
 snowField           = pygame.image.load('sprites/snowFieldBig.png')
 field               = pygame.image.load('sprites/fieldBig.png')
@@ -145,7 +111,6 @@ while gui.running:
     # Tick
     gui.dt           = clock.tick(FPS)
     gui.gameElapsed += gui.dt/1000
-    continue
 
 # Done! Time to quit.
 pygame.quit()

@@ -29,8 +29,12 @@ class manageInput():
         
         if(gui.gameState=='ingame'):
             user_input.kick = None
+            user_input.fire = None
+
             if(user_input.returnedKey.upper()=='H'): user_input.kick  = True
 
+            if(pygame.key.get_pressed()[pygame.K_j]): user_input.fire    =True
+            
             if(pygame.key.get_pressed()[pygame.K_w]): user_input.up    =True
             if(pygame.key.get_pressed()[pygame.K_s]): user_input.down  =True
             if(pygame.key.get_pressed()[pygame.K_a]): user_input.left  =True
