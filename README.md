@@ -2,28 +2,45 @@
 
 # raw gameplay
 
+**get as much gameplay in as poss, so campaign can be built out quicker**
 
 - Get the DeathBall to the enemy hub to score a point
-- You have weapons 
-- You have shields to protect you
-- Ball carrier shields deplete faster
-- Ball denotates if you hold it too long
-- AI team formations
-- Kill Enemy boss spawns for money
-- Dead players respawn back at base, with 10 countdown after spawn
-- Big gaps between def, mid and attack (you can flick between characters)
+- You have weapons,shields and health
+- Holding the ball makes things harder
 
+## Features
 
-# Shop
+[Done] Draw sprite
+[Done] Sprite movement
+[Done] Sprite movement diagonals
+[Done] bullets Basics
+[Done] Ball Basics
+[Done] Dialogue box Basics
 
-## Weapons
-
-- bullets
 - Lasers
-
-## Armour
-
+- Dialogue box (Red team has the ball)
+- Armour mechanic
 - Shield Generator
+- Drop bombs (silent bomber)
+- Money pickup
+- Touch Nodes (like the stars)
+- Bomb lockon
+- Multipliers
+- Commentary Box
+- AI assistants
+- Enemy boss spawn
+- enemy boss hp appear as you hit them
+- Player died - inactive...
+- Teleport to ball (unlockable)
+- Monsters tentacles, giant mechs to get past 
+	- Fire on them as a team
+	- Get money and more points
+- Shop
+- Streaks (stops stalemates)
+- Kill Bonuses (stops stalemates)
+- negative feedbackloops in party games
+
+
 
 # Levels
 
@@ -34,7 +51,15 @@
 
 
 
-## Ideas 
+## Ideas Experimental 
+
+- AI team formations
+- Kill Enemy boss spawns for money
+- Dead players respawn back at base, with 10 countdown after spawn
+- Big gaps between def, mid and attack (you can flick between characters)
+- Lock 3 balls to blow up the enemy fortress...then final push to take them out
+
+- Switch players to distract boss focus
 
 Players run in to the center in a V formation to clash and start shooting after 3.2.1...
 
@@ -46,13 +71,18 @@ Demons have fireballs in campaign mode
 
 Make it mental ,with lots of shit happening, lasers projectiles flying everywhere
 
+https://www.youtube.com/watch?v=xbN9z75kYTU
 
 
 
-## Features
 
-- Dialogue box (Red team has the ball)
-- AI assistants
-- Monsters tentacles, giant mechs to get past 
-	- Fire on them as a team
-	- Get money and more points
+# Pseudo theme
+
+Knockout game MK style 
+
+Fight deamons etc
+
+
+End game beat the Puppeters in a futuristic/sonic3d endstyle
+
+unify ...

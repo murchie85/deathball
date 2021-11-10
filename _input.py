@@ -14,7 +14,7 @@ class manageInput():
         self.shift = shift
     def help():
         print('Pass user_input class into this, to include shift modifier')
-    def manageButtons(self,event,user_input,gui):
+    def manageButtons(self,event,user_input,game):
         
         # -------------return entered key
         if event.type == pygame.KEYDOWN: user_input.returnedKey = str(pygame.key.name(event.key))
@@ -27,7 +27,7 @@ class manageInput():
         user_input.left  = pygame.key.get_pressed()[pygame.K_LEFT]
         user_input.right = pygame.key.get_pressed()[pygame.K_RIGHT]
         
-        if(gui.gameState=='ingame'):
+        if(game.gameState=='ingame'):
             user_input.kick = None
             user_input.fire = None
 
@@ -101,7 +101,7 @@ class manageInput():
 
 
 class userInputObject():
-    def __init__(self,returnedKey,enteredString,boxDims, gui,directionBtn=None,  inputLimit = 30):
+    def __init__(self,returnedKey,enteredString,boxDims, game,directionBtn=None,  inputLimit = 30):
         self.returnedKey   = returnedKey
         self.pressedKey    = None
         self.up            = False
@@ -115,7 +115,7 @@ class userInputObject():
 
         self.enteredString = enteredString
         self.boxDims       = boxDims
-        self.gui           = gui
+        self.game           = game
         self.directionBtn  = directionBtn
         self.inputLimit    = inputLimit
     
@@ -155,8 +155,8 @@ class userInputObject():
 
     def drawTextInput(self,text,x,y,colour=(0, 128, 0), blink = {'blinkDuration':5,'blinkValue':5,'displayInterval':5,'displayValue':5},chosenFont=None,limit=None):
 
-        gui = self.gui
-        if(chosenFont==None): chosenFont=gui.font
+        game = self.game
+        if(chosenFont==None): chosenFont=game.font
 
 
         # --------------BLINK TEXT ON/OFF
@@ -180,20 +180,20 @@ class userInputObject():
                 textsurface = chosenFont.render(text, True, colour)
 
         # --------------BLIT TEXT 
-        gui.screen.blit(textsurface,(x,y))
+        game.screen.blit(textsurface,(x,y))
 
 
     def drawInputBox(self):
-        gui       = self.gui
-        boxX      = self.boxDims[0] * self.gui.width
-        boxY      = self.boxDims[1] * self.gui.height
-        boxWidth  = self.boxDims[2] * self.gui.width
-        boxHeight = self.boxDims[3] * self.gui.height
+        game       = self.game
+        boxX      = self.boxDims[0] * self.game.width
+        boxY      = self.boxDims[1] * self.game.height
+        boxWidth  = self.boxDims[2] * self.game.width
+        boxHeight = self.boxDims[3] * self.game.height
 
         textX         = boxX + (0.1*boxWidth)
         textY         = boxY + (0.44*boxHeight)
-        boardingBox   = buildColouredBox(gui,boxX,boxY,boxWidth,boxHeight)
-        self.drawTextInput(self.enteredString ,textX,textY,colour=gui.white)
+        boardingBox   = buildColouredBox(game,boxX,boxY,boxWidth,boxHeight)
+        self.drawTextInput(self.enteredString ,textX,textY,colour=game.white)
 
 
 

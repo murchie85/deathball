@@ -11,15 +11,16 @@ class sprite():
         self.vx          = 0
         self.vy          = 0
         self.frameTime   = 0
+        self.carried     = False
 
-    def animate(self,gui,camera, interval=0.5):
+    def animate(self,game,camera, interval=0.5):
         """
         animages image every interval (in seconds)
         once image reaches end, it resets to first image
         """
         
         # incremented timer
-        self.frameTime += gui.dt/1000
+        self.frameTime += game.dt/1000
         
         # increment frame when interval reached
         if(self.frameTime>=interval):
@@ -31,7 +32,7 @@ class sprite():
             self.framePos=0
         
 
-        gui.screen.blit(self.imageFrames[self.framePos],(self.x-camera.x,self.y-camera.y))
+        game.screen.blit(self.imageFrames[self.framePos],(self.x-camera.x,self.y-camera.y))
 
 
 
@@ -96,10 +97,10 @@ class fitbaObject():
     
 
 
-    def updateSprite(self,gui,camera):
+    def updateSprite(self,game,camera):
 
         self.sprite.x,self.sprite.y = self.x,self.y
-        self.sprite.animate(gui,camera)
+        self.sprite.animate(game,camera)
 
         if(self.kick!=None): self.kicked = True 
         

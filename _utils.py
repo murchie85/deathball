@@ -37,3 +37,25 @@ def impFilesL(sName,tDir = 'pics/assets/mechBox/'):
         exit()
     return(spriteList)
 
+
+
+
+class statsBox():
+    def __init__(self,x,y,font):
+        self.x          = x
+        self.y          = y
+        self.font       = font
+        self.colour     = (150,150,150)
+        self.iboxcol    = (0,0,0)
+
+    def display(self,textarray,game):
+        for t in range(len(textarray)):
+            text = textarray[t]
+            textsurface = self.font.render(text, True, self.colour)
+            tw = textsurface.get_rect().width
+            th = textsurface.get_rect().height
+
+            pygame.draw.rect(game.screen, (self.iboxcol), [self.x, self.y + t*th,tw ,th])
+            game.screen.blit(textsurface,(self.x,self.y + t*th))
+
+

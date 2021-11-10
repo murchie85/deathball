@@ -2,13 +2,12 @@ from _gun import *
 
 
 
-
-
 class playerObject():
     """
     takes in playersprite classs from utils
     """
-    def __init__(self,playerSprite,x,y,vx,vy):
+    def __init__(self,name,playerSprite,x,y,vx,vy):
+        self.name               = name
         self.sprite             = playerSprite
         self.x                  = x
         self.y                  = y
@@ -19,16 +18,22 @@ class playerObject():
         self.stationary         = True
         self.carryBall          = False
         self.pGun               = pgun()
+        self.w                  = playerSprite.w
+        self.h                  = playerSprite.h
+        self.selected           = False           # Not used
+
+        self.health             = 100
+        self.armour             = 50
 
 
 
-    def dribble(self,carryBall,fitba,inRange,gui,bounce=1):
+    def dribble(self,carryBall,fitba,inRange,game,bounce=1):
         
         # Ball follows player if true
         if(carryBall==True): fitba.x,fitba.y = self.x,self.y
 
         # Set ball direction if kicked
-        if(gui.userInput.kick and carryBall==True):
+        if(game.userInput.kick and carryBall==True):
             self.carryBall='kick'
             if(self.facing=='u'): fitba.kick  ='up'
             if(self.facing=='d'): fitba.kick  ='down'
@@ -46,7 +51,8 @@ class playerObject():
 
         # After kicking and ball is out of sphere, reset
         if(self.carryBall=='kick' and inRange==False):
-            self.carryBall=False
+            self.carryBall =False
+            fitba.carried  = False
 
     
         
@@ -86,39 +92,70 @@ class playerObject():
                 return(True)
         return(False)
 
-    def fireGun(self,gui,camera):
-        # facing != userInput.dir because diagonals
-        self.pGun.shoot(self.x,self.y, self.facing,gui,gui.userInput.fire,camera)
+    def fireGun(self,game,camera):
+        """calls guns shoot method """
+        self.pGun.shoot(self.x,self.y, self.facing,game,game.userInput.fire,self.name,camera)
     
-    def play_selected(self,gui,fitba,camera=None):
+    def takeDamage(self,damage):
+        """called by impacting bullet"""
+        if(self.armour>0): self.armour -= damage
+        if(self.armour<1): self.health -= damage
 
-        #self.sprite.animate(gui,stop=True)
-        self.stationary = (gui.userInput.up==False and gui.userInput.down==False and gui.userInput.left==False and gui.userInput.right==False)
+    
+    def autoPlay(self,game,fitba,camera=None):
+
+        #self.sprite.animate(game,stop=True)
+        self.stationary = True
+        
+        # -------check if colliding with ball
+        colliding = self.collides((self.x,self.y),fitba)
+        if(colliding and self.carryBall==False):
+            self.carryBall = True
+            fitba.carried = True
+        
+        inRange   = self.inRange((self.x,self.y),fitba)
+        
+        
+        # -------update position
+        self.updateSprite(game)
+
+        # ------Animate
+        self.sprite.animate(game,self.facing,camera,stop=self.stationary)
+
+
+
+    def play_selected(self,game,fitba,camera=None):
+
+        # Draw Selected Icon
+        game.selectedIconIndex,game.selectedIcnWait = game.animate(self.x+0.3*self.w,self.y-50,game.selectedIcon, game.selectedIconIndex,camera,game.selectedIcnWait,200)
+
+        #self.sprite.animate(game,stop=True)
+        self.stationary = (game.userInput.up==False and game.userInput.down==False and game.userInput.left==False and game.userInput.right==False)
         
         # Set Direction, set  velocity
         self.u,self.d,self.l,self.r = False,False,False,False
         # Manage Velocity
-        if(gui.userInput.up):    
+        if(game.userInput.up):    
             self.y -= self.vy
             self.u = True
             self.facing = 'u'
-        if(gui.userInput.down):  
+        if(game.userInput.down):  
             self.y += self.vy
             self.d = True
             self.facing = 'd'
-        if(gui.userInput.left):  
+        if(game.userInput.left):  
             self.x -= self.vx
             self.l = True
             self.facing = 'l'
-        if(gui.userInput.right): 
+        if(game.userInput.right): 
             self.x += self.vx
             self.r = True
             self.facing = 'r'
 
-        if(gui.userInput.up and gui.userInput.left):    self.facing = 'ul'
-        if(gui.userInput.up and gui.userInput.right):   self.facing = 'ur'
-        if(gui.userInput.down and gui.userInput.left):  self.facing = 'dl'
-        if(gui.userInput.down and gui.userInput.right): self.facing = 'dr'
+        if(game.userInput.up and game.userInput.left):    self.facing = 'ul'
+        if(game.userInput.up and game.userInput.right):   self.facing = 'ur'
+        if(game.userInput.down and game.userInput.left):  self.facing = 'dl'
+        if(game.userInput.down and game.userInput.right): self.facing = 'dr'
 
 
         # -------check if colliding with ball
@@ -129,17 +166,17 @@ class playerObject():
         inRange   = self.inRange((self.x,self.y),fitba)
         
         # ------ dribble ball
-        self.dribble(self.carryBall,fitba,inRange,gui)
+        self.dribble(self.carryBall,fitba,inRange,game)
 
-        self.fireGun(gui,camera)
+        self.fireGun(game,camera)
         
         # -------update position
-        self.updateSprite(gui)
+        self.updateSprite(game)
 
         # ------Animate
-        self.sprite.animate(gui,self.facing,camera,stop=self.stationary)
+        self.sprite.animate(game,self.facing,camera,stop=self.stationary)
 
-    def updateSprite(self,gui):
+    def updateSprite(self,game):
         self.sprite.x,self.sprite.y = self.x,self.y
 
 
@@ -201,7 +238,7 @@ class playerSprite():
 
 
 
-    def animate(self,gui,facing,camera,interval=0.2,stop=False):
+    def animate(self,game,facing,camera,interval=0.2,stop=False):
         """
         animages image every interval (in seconds)
         once image reaches end, it resets to first image
@@ -221,13 +258,13 @@ class playerSprite():
         
 
         if(stop):
-            gui.screen.blit(self.liveFrames[0],(self.x- camera.x,self.y- camera.y))
+            game.screen.blit(self.liveFrames[0],(self.x- camera.x,self.y- camera.y))
             return()
         
 
         #-----------animate
         # incremented timer
-        self.frameTime += gui.dt/1000
+        self.frameTime += game.dt/1000
         
         # increment frame when interval reached
         if(self.frameTime>=interval):
@@ -238,5 +275,5 @@ class playerSprite():
         if(self.framePos>=self.numFrames): 
             self.framePos=0
         
-        gui.screen.blit(self.liveFrames[self.framePos],(self.x - camera.x,self.y- camera.y))
+        game.screen.blit(self.liveFrames[self.framePos],(self.x - camera.x,self.y- camera.y))
 
