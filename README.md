@@ -16,8 +16,14 @@
 [Done] bullets Basics
 [Done] Ball Basics
 [Done] Dialogue box Basics
+[Done] Border limit
 
+
+- Player AI Basic
+- Better ball mechanics
+- rockets
 - Lasers
+- Flame thrower
 - Dialogue box (Red team has the ball)
 - Armour mechanic
 - Shield Generator
@@ -29,6 +35,7 @@
 - Commentary Box
 - AI assistants
 - Enemy boss spawn
+- Lightening plasma ball 
 - enemy boss hp appear as you hit them
 - Player died - inactive...
 - Teleport to ball (unlockable)
@@ -36,9 +43,13 @@
 	- Fire on them as a team
 	- Get money and more points
 - Shop
+	- Boost speed
+	- Boost armour
 - Streaks (stops stalemates)
 - Kill Bonuses (stops stalemates)
 - negative feedbackloops in party games
+----mega---
+Chrono style team moves
 
 
 
@@ -73,6 +84,11 @@ Make it mental ,with lots of shit happening, lasers projectiles flying everywher
 
 https://www.youtube.com/watch?v=xbN9z75kYTU
 
+Bosses
+
+Tripod boss
+Mech boss
+Octo boss
 
 
 

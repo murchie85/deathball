@@ -46,16 +46,15 @@ fitba                  = fitbaObject(footballSprite)
 
 
 protoSprite            = impFilesL('proto1.png',tDir='sprites/players/mech/')
-squad                  = { 'capt':playerObject('capt',playerSprite(protoSprite),game.width/2,game.height/3,vx=5,vy=5),
-                           'fwdr':playerObject('fwdr',playerSprite(protoSprite),0.6*game.width,0.2*game.height,vx=5,vy=5),
-                           'fwdl':playerObject('fwdl',playerSprite(protoSprite),0.4*game.width,0.2*game.height,vx=5,vy=5),
-                           'midr':playerObject('midr',playerSprite(protoSprite),0.6*game.width,0.5*game.height,vx=5,vy=5),
-                           'midl':playerObject('midl',playerSprite(protoSprite),0.4*game.width,0.5*game.height,vx=5,vy=5),
+squad                  = { 'capt':playerObject('capt',playerSprite(protoSprite),0.5*game.width,0.3*game.height,vx=5,vy=5,originX=0.5*game.mapW,originY=0.3*game.mapH ),
+                           'fwdr':playerObject('fwdr',playerSprite(protoSprite),0.6*game.width,0.2*game.height,vx=5,vy=5,originX=0.6*game.mapW,originY=0.2*game.mapH ),
+                           'fwdl':playerObject('fwdl',playerSprite(protoSprite),0.4*game.width,0.2*game.height,vx=5,vy=5,originX=0.4*game.mapW,originY=0.2*game.mapH ),
+                           'midr':playerObject('midr',playerSprite(protoSprite),0.6*game.width,0.5*game.height,vx=5,vy=5,originX=0.6*game.mapW,originY=0.5*game.mapH ),
+                           'midl':playerObject('midl',playerSprite(protoSprite),0.4*game.width,0.5*game.height,vx=5,vy=5,originX=0.4*game.mapW,originY=0.5*game.mapH ),
 
                            }
 squad['capt'].selected = True
 selectable = ['capt','fwdr','fwdl','midr','midl']
-
 statsBox            = statsBox(0,0,game.smallFont)
 
 
@@ -72,7 +71,7 @@ while game.running:
     game.itercount+=1
 
     screen.fill((0, 0, 0))
-    drawImage(screen,game.snowField,(0-camera.x,0 -camera.y))
+    drawImage(screen,game.map,(game.mapX-camera.x,game.mapY -camera.y))
     
     game.clicked = False
     # Reset the key each round
@@ -102,12 +101,20 @@ while game.running:
     fitba.updateSprite(game,camera)
 
 
+    # Change Players
+    if(game.userInput.returnedKey=='y'):
+        for a in range(len(selectable)):
+            if(game.squad[selectable[a]].selected==True):
+                game.squad[selectable[a]].selected = False
+                nextPlayer = a+1
+                if(nextPlayer>=len(selectable)): nextPlayer = 0
+                game.squad[selectable[nextPlayer]].selected = True
+                break
+
 
     # Iterate thru players
     for s in game.squad:
         member = game.squad[s]
-        if(game.userInput.returnedKey=='y'): member.selected = not member.selected
-        
         if(member.selected): 
             player = member
         else:
@@ -124,15 +131,34 @@ while game.running:
                       'Health ' + str(player.health),
                       'Armour ' + str(player.armour),
                       'Carrying ' + str(player.carryBall),
-                      'Facing ' + str(player.facing)],game)
+                      'Facing ' + str(player.facing),
+                      'Position ' + str(player.x) + ','+str(player.y)],game),
         
    
     
     
     # update camera
     if(camera.target=='player'):
+
         camera.x = player.x + camera.offx
         camera.y = player.y + camera.offy
+        
+        # ---- Borders
+        if(player.x>=(game.mapX+game.mapW)-100): player.x = (game.mapX+game.mapW)-100
+        if(player.x<=(game.mapX)+100): player.x = (game.mapX)+100
+        if(player.y>(game.mapY+ game.mapH)-100): player.y = (game.mapY+ game.mapH)-100
+        if(player.y<(game.mapY)+100):player.y = (game.mapY)+100
+
+        if(camera.x>(game.mapX+game.mapW)-game.width):camera.x = (game.mapX+game.mapW) -game.width
+        if(camera.x<=(game.mapX)+100): camera.x = (game.mapX)+100
+        if(camera.y>(game.mapY + game.mapH)-game.height):camera.y = (game.mapY+ game.mapH)-game.height
+        if(camera.y<(game.mapY)):camera.y = (game.mapY)
+
+        if(fitba.x>=(game.mapX+game.mapW)-100): fitba.x = (game.mapX+game.mapW)-100
+        if(fitba.x<=(game.mapX)+100):           fitba.x = (game.mapX)+100
+        if(fitba.y>(game.mapY+ game.mapH)-100): fitba.y = (game.mapY+ game.mapH)-100
+        if(fitba.y<(game.mapY)+100):            fitba.y = (game.mapY)+100
+
 
     if(camera.target=='ball'):
         camera.x = fitba.x + camera.offx

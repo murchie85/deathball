@@ -34,10 +34,18 @@ class game():
 
 
 
-        # images
+        # --------- images
+
         self.snowField           = pygame.image.load('sprites/snowFieldBig.png')
         self.field               = pygame.image.load('sprites/fieldBig.png')
+        self.map                 = self.snowField
+        self.mapX                = 0
+        self.mapY                = 0
+        self.mapW                = self.map.get_rect().w
+        self.mapH                = self.map.get_rect().h
 
+
+        # ---------runtime 
 
         self.squad               = {} # Loaded at runtime
 

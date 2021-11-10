@@ -1,12 +1,11 @@
 from _gun import * 
 
 
-
 class playerObject():
     """
     takes in playersprite classs from utils
     """
-    def __init__(self,name,playerSprite,x,y,vx,vy):
+    def __init__(self,name,playerSprite,x,y,vx,vy,originX,originY):
         self.name               = name
         self.sprite             = playerSprite
         self.x                  = x
@@ -24,6 +23,116 @@ class playerObject():
 
         self.health             = 100
         self.armour             = 50
+
+
+        # ------ Bot behaviour
+        self.origin                 = {'x':originX,'y':originY}
+        self.botState               = 'origin'
+        self.r,self.l,self.u,self.d = False,False,False,False
+
+
+
+    def play_selected(self,game,fitba,camera=None):
+
+        # Draw Selected Icon
+        game.selectedIconIndex,game.selectedIcnWait = game.animate(self.x+0.3*self.w,self.y-50,game.selectedIcon, game.selectedIconIndex,camera,game.selectedIcnWait,200)
+
+        #self.sprite.animate(game,stop=True)
+        self.stationary = (game.userInput.up==False and game.userInput.down==False and game.userInput.left==False and game.userInput.right==False)
+        
+
+        # Manage Velocity
+        if(game.userInput.up):    
+            self.y -= self.vy
+            self.facing = 'u'
+        if(game.userInput.down):  
+            self.y += self.vy
+            self.facing = 'd'
+        if(game.userInput.left):  
+            self.x -= self.vx
+            self.facing = 'l'
+        if(game.userInput.right): 
+            self.x += self.vx
+            self.facing = 'r'
+
+        if(game.userInput.up and game.userInput.left):    self.facing = 'ul'
+        if(game.userInput.up and game.userInput.right):   self.facing = 'ur'
+        if(game.userInput.down and game.userInput.left):  self.facing = 'dl'
+        if(game.userInput.down and game.userInput.right): self.facing = 'dr'
+
+
+        # -------check if colliding with ball
+        colliding = self.collides((self.x,self.y),fitba)
+        if(colliding and self.carryBall==False):
+            self.carryBall = True
+        
+        inRange   = self.inRange((self.x,self.y),fitba)
+        
+        # ------ dribble ball
+        self.dribble(self.carryBall,fitba,inRange,game)
+
+        self.fireGun(game,camera)
+        
+        # -------update position
+        self.updateSprite(game)
+
+        # ------Animate
+        self.sprite.animate(game,self.facing,camera,stop=self.stationary)
+
+    def autoPlay(self,game,fitba,camera=None):
+
+        #self.sprite.animate(game,stop=True)
+        self.stationary = (self.r==False and self.l==False and self.u==False and self.d==False)
+        
+        # -------check if colliding with ball
+        colliding = self.collides((self.x,self.y),fitba)
+        if(colliding and self.carryBall==False):
+            self.carryBall = True
+            fitba.carried = True
+        
+        inRange   = self.inRange((self.x,self.y),fitba)
+        
+        # Set Direction, set  velocity
+        self.u,self.d,self.l,self.r = False,False,False,False
+        
+        #--------Default behaviour
+        if(self.botState=='origin'):
+            if(self.x<self.origin['x']): self.r = True
+            if(self.x>self.origin['x']): self.l = True
+            if(self.y<self.origin['y']): self.d = True
+            if(self.y>self.origin['y']): self.u = True
+
+
+        # Set Running and facing
+        if(self.u): 
+            self.y -= self.vy
+            self.facing = 'u'
+        if(self.d): 
+            self.y += self.vy
+            self.facing = 'd'
+        if(self.l): 
+            self.x -= self.vx
+            self.facing = 'l'
+        if(self.r): 
+            self.x += self.vx
+            self.facing = 'r'
+        
+        if(self.u and self.l): self.facing = 'ul'
+        if(self.u and self.r): self.facing = 'ur'
+        if(self.d and self.l): self.facing = 'dl'
+        if(self.d and self.r): self.facing = 'dr'
+
+        print(self.stationary)
+        # -------update position
+        self.updateSprite(game)
+
+        # ------Animate
+        self.sprite.animate(game,self.facing,camera,stop=self.stationary)
+
+
+
+    def updateSprite(self,game):
+        self.sprite.x,self.sprite.y = self.x,self.y
 
 
 
@@ -102,82 +211,11 @@ class playerObject():
         if(self.armour<1): self.health -= damage
 
     
-    def autoPlay(self,game,fitba,camera=None):
-
-        #self.sprite.animate(game,stop=True)
-        self.stationary = True
-        
-        # -------check if colliding with ball
-        colliding = self.collides((self.x,self.y),fitba)
-        if(colliding and self.carryBall==False):
-            self.carryBall = True
-            fitba.carried = True
-        
-        inRange   = self.inRange((self.x,self.y),fitba)
-        
-        
-        # -------update position
-        self.updateSprite(game)
-
-        # ------Animate
-        self.sprite.animate(game,self.facing,camera,stop=self.stationary)
 
 
 
-    def play_selected(self,game,fitba,camera=None):
-
-        # Draw Selected Icon
-        game.selectedIconIndex,game.selectedIcnWait = game.animate(self.x+0.3*self.w,self.y-50,game.selectedIcon, game.selectedIconIndex,camera,game.selectedIcnWait,200)
-
-        #self.sprite.animate(game,stop=True)
-        self.stationary = (game.userInput.up==False and game.userInput.down==False and game.userInput.left==False and game.userInput.right==False)
-        
-        # Set Direction, set  velocity
-        self.u,self.d,self.l,self.r = False,False,False,False
-        # Manage Velocity
-        if(game.userInput.up):    
-            self.y -= self.vy
-            self.u = True
-            self.facing = 'u'
-        if(game.userInput.down):  
-            self.y += self.vy
-            self.d = True
-            self.facing = 'd'
-        if(game.userInput.left):  
-            self.x -= self.vx
-            self.l = True
-            self.facing = 'l'
-        if(game.userInput.right): 
-            self.x += self.vx
-            self.r = True
-            self.facing = 'r'
-
-        if(game.userInput.up and game.userInput.left):    self.facing = 'ul'
-        if(game.userInput.up and game.userInput.right):   self.facing = 'ur'
-        if(game.userInput.down and game.userInput.left):  self.facing = 'dl'
-        if(game.userInput.down and game.userInput.right): self.facing = 'dr'
 
 
-        # -------check if colliding with ball
-        colliding = self.collides((self.x,self.y),fitba)
-        if(colliding and self.carryBall==False):
-            self.carryBall = True
-        
-        inRange   = self.inRange((self.x,self.y),fitba)
-        
-        # ------ dribble ball
-        self.dribble(self.carryBall,fitba,inRange,game)
-
-        self.fireGun(game,camera)
-        
-        # -------update position
-        self.updateSprite(game)
-
-        # ------Animate
-        self.sprite.animate(game,self.facing,camera,stop=self.stationary)
-
-    def updateSprite(self,game):
-        self.sprite.x,self.sprite.y = self.x,self.y
 
 
 
